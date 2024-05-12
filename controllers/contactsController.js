@@ -30,7 +30,76 @@ const getContactById = async (req, res, next) => {
 };
 
 
+// Create a contact
+const createContact = async (req, res, next) => {
+
+  const contact = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      favoriteColor: req.body.favoriteColor,
+      birthday: req.body.birthday
+  };
+  
+  const result = await mongodb.getDb().db("cse341").collection('contacts').insertOne(contact);
+
+  if (result.acknowledged) {
+      res.status(201).json(result); // 201 Created
+  } else {
+      res.status(500).json({ message: "Failed to insert contact" });
+  }
+  
+};
+
+
+
+
+const updateContact = async (req, res, next) => {
+ 
+  const contactId = new ObjectId(req.params.id); 
+  const updatedContact = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      favoriteColor: req.body.favoriteColor,
+      birthday: req.body.birthday
+  };
+
+
+  const result = await mongodb.getDb()
+      .db("cse341")
+      .collection('contacts')
+      .updateOne({ _id: contactId }, { $set: updatedContact });
+
+  if (result.modifiedCount > 0) {
+      res.status(204).end(); // 204 Updated
+  } else {
+      res.status(404).json({ message: "Contact not found" });
+  }
+  
+};
+
+const deleteContact = async (req, res, next) => {
+  
+  const contactId = new ObjectId(req.params.id);
+
+  const result = await mongodb.getDb()
+      .db("cse341")
+      .collection('contacts')
+      .deleteOne({ _id: contactId });
+
+  if (result.deletedCount > 0) {
+      res.status(204).end(); // 204 Deleted
+  } else {
+      res.status(404).json({ message: "Contact not found" });
+  }
+  
+};
+
 module.exports = {
   getContacts,
-  getContactById
+  getContactById,
+  createContact,
+  updateContact,
+  deleteContact
 };
