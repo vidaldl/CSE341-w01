@@ -5,7 +5,7 @@ const doc = {
     title: 'Contact API',
     description: 'A simple CRUD API for managing contacts'
   },
-  host: 'https://cse341-w01-501v.onrender.com'
+  host: 'cse341-w01-501v.onrender.com'
 };
 
 const outputFile = './swagger.json';
